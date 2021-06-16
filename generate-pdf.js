@@ -28,9 +28,14 @@ async function generatePdf() {
     await page.setContent(html)
 
     console.log("Generating the PDF")
+    
+    if (!fs.existsSync('invoices')) {
+      fs.mkdirSync('invoices');
+    }
+
     await page.pdf({ path: 'invoices/invoice-YYYY-MM.pdf', format: 'A4' })
     await browser.close()
-    console.log("PDF Generated")
+    console.log("PDF Generated at `invoices/invoice-YYYY-MM.pdf`")
   }).catch(err => {
     console.error(err)
   })
