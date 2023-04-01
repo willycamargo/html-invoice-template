@@ -15,6 +15,15 @@ async function getTemplateHtml() {
   }
 }
 
+function generateInvoiceFileName() {
+  const today = new Date()
+  const year = today.getFullYear()
+  const month = (today.getMonth() + 1).toString().padStart(2, '0')
+  const day = today.getDate().toString().padStart(2, '0')
+
+  return `invoice-${year}-${month}-${day}.pdf`
+}
+
 async function generatePdf() {
   let data = {}
 
@@ -30,12 +39,14 @@ async function generatePdf() {
     console.log("Generating the PDF")
     
     if (!fs.existsSync('invoices')) {
-      fs.mkdirSync('invoices');
+      fs.mkdirSync('invoices')
     }
 
-    await page.pdf({ path: 'invoices/invoice-YYYY-MM.pdf', format: 'A4' })
+    const invoiceFileName = generateInvoiceFileName()
+
+    await page.pdf({ path: `invoices/${invoiceFileName}`, format: 'A4' })
     await browser.close()
-    console.log("PDF Generated at `invoices/invoice-YYYY-MM.pdf`")
+    console.log(`PDF Generated at "invoices/${invoiceFileName}"`)
   }).catch(err => {
     console.error(err)
   })
